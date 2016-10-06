@@ -30,22 +30,29 @@ namespace RhymesWithOrange
         private void button1_Click(object sender, EventArgs e)
         {
             resultsLabel.Text = "Searching....";
+
             string word = wordTextBox.Text;
-            List<String> rhymes = findRhymes(word);
-            if (rhymes != null)
+
+            BackgroundWorker webWorker = new BackgroundWorker();
+            webWorker.WorkerSupportsCancellation = true;
+            webWorker.DoWork += new DoWorkEventHandler(webWorker_DoWork);
+            webWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(webWorker_RunWorkerCompleted);
+
+            if (webWorker.IsBusy)
             {
-                resultsLabel.Text = createDisplayString(rhymes);
+                webWorker.CancelAsync();
             }
-            else
-            {
-                resultsLabel.Text = "Oh no! An error fetching rhymes";
-            } 
+
+            webWorker.RunWorkerAsync(word);
+           
+             
         }
+
 
         private string createDisplayString(List<string> rhymes)
         {
 
-            string results = "Here are some words that rhyme:\n";
+            string results = "Computers think these words rhyme:\n";
             foreach (String word in rhymes)
             {
                 results += word;
@@ -55,11 +62,13 @@ namespace RhymesWithOrange
             return results;
         }
 
-        private List<String> findRhymes(string word)
+//        private List<String> findRhymes(string word)
+        private void webWorker_DoWork(Object sender, DoWorkEventArgs e)
         {
             try
             {
-                String urlBase = "http://rhymebrain.com/talk?function=getRhymes&word={0}&maxResults=10";
+                String word = e.Argument as String;
+                String urlBase = "http://rhymebrain.com/talk?function=getRhymes&word={0}";
                 String url = String.Format(urlBase, word);
 
                 WebRequest request = WebRequest.Create(url);
@@ -68,7 +77,7 @@ namespace RhymesWithOrange
                 Stream data = resp.GetResponseStream();
                 StreamReader reader = new StreamReader(data);
 
-                string json = reader.ReadToEnd();
+                String json = reader.ReadToEnd();
 
                 resp.Close();
 
@@ -81,19 +90,29 @@ namespace RhymesWithOrange
                     rhymingWordsList.Add(rhyme.word);
                 }
 
-                return rhymingWordsList;
+                e.Result = rhymingWordsList;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine("Error fetching rhymes: " + e);
-                return null;
+                Console.WriteLine("Error fetching rhymes: " + ex);
+                //Log and rethrow. Will become e.Error in RunWorkerCompleted
+                throw ex;
             }
 
         }
 
-        private void label2_Click(object sender, EventArgs e)
+        private void webWorker_RunWorkerCompleted(Object sender, RunWorkerCompletedEventArgs e)
         {
-        
+            if (e.Error == null)
+            {
+                List<String> resultsList = e.Result as List<String>;
+                resultsLabel.Text = createDisplayString(resultsList);
+            }
+            else
+            {
+                resultsLabel.Text = "Oh no! An error fetching rhymes";
+            }
         }
     }
 }
+

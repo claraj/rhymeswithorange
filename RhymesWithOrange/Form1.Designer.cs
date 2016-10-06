@@ -32,6 +32,8 @@
             this.wordTextBox = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.resultsLabel = new System.Windows.Forms.Label();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // getRhymesButton
@@ -65,21 +67,32 @@
             // resultsLabel
             // 
             this.resultsLabel.AutoSize = true;
-            this.resultsLabel.Location = new System.Drawing.Point(20, 80);
+            this.resultsLabel.Location = new System.Drawing.Point(11, 12);
             this.resultsLabel.Name = "resultsLabel";
             this.resultsLabel.Size = new System.Drawing.Size(0, 15);
             this.resultsLabel.TabIndex = 4;
+            // 
+            // panel1
+            // 
+            this.panel1.AutoScroll = true;
+            this.panel1.Controls.Add(this.resultsLabel);
+            this.panel1.Location = new System.Drawing.Point(12, 69);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(260, 180);
+            this.panel1.TabIndex = 5;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 261);
-            this.Controls.Add(this.resultsLabel);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.wordTextBox);
             this.Controls.Add(this.getRhymesButton);
             this.Name = "Form1";
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -91,6 +104,7 @@
         private System.Windows.Forms.TextBox wordTextBox;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label resultsLabel;
+        private System.Windows.Forms.Panel panel1;
     }
 }
 
