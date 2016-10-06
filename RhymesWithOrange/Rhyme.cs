@@ -19,7 +19,7 @@ namespace RhymesWithOrange
 
         public override String ToString()
         {
-            return word + freq + " " + score + flags + syllables;
+            return word + freq + score + flags + syllables;
         }
     
     }
